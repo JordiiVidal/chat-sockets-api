@@ -8,11 +8,11 @@ void main() {
   // Listen
   channel.stream.listen(
     (event) {
-      print(event.messsages);
+      print(event);
     },
   );
   // Send
-  //channel.sink.add('__addmessage__');
+  channel.sink.add('__addmessage__');
   // Close
   //channel.sink.close();
 }

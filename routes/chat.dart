@@ -5,15 +5,16 @@ import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
 Future<Response> onRequest(RequestContext context) async {
   final handler = webSocketHandler((channel, protocol) {
     // A new client has connected to our server.
+    print(channel);
     final cubit = context.read<ChatCubit>()..subscribe(channel);
     // Send a message to the client.
-    channel.sink.add('${cubit.state}');
+    //channel.sink.add(cubit.state);
     // Listen for messages from the client.
     channel.stream.listen(
       (event) {
         switch (event) {
           case '__addmessage__':
-            cubit.addMessage('hola');
+            cubit.addMessage();
             break;
           default:
             break;
