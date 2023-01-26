@@ -1,3 +1,4 @@
+import 'package:chat_sockets_api/models/chat.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -5,17 +6,29 @@ import 'package:uuid/uuid.dart';
 const uuid = Uuid();
 
 /// Provider
-final chatProvider = StateNotifierProvider<ChatsNotifier, List<String>>(
+final chatProvider = StateNotifierProvider<ChatsNotifier, List<Chat>>(
   (ref) => ChatsNotifier(),
 );
 
 /// Class
-class ChatsNotifier extends StateNotifier<List<String>> {
+class ChatsNotifier extends StateNotifier<List<Chat>> {
   /// Constructor
   ChatsNotifier() : super([]);
 
-  /// Client add message
-  void addChat() {
-    state = [...state, 'dasdas'];
+  /// Client add chat
+  void addChat(String name) {
+    final chat = Chat(id: '1', name: name, messsages: []);
+    state = [...state, chat];
+  }
+
+  /// Add message
+  void addMessage(String chatId, String message) {
+    state = [
+      for (final chat in state)
+        if (chat.id == chatId)
+          chat.copyWith(messsages: [...chat.messsages, message])
+        else 
+          chat
+    ];
   }
 }
