@@ -12,7 +12,7 @@ void main() {
     },
   );
   // Send
-  channel.sink.add('__addmessage__');
+  channel.sink.add('add_message');
   // Close
   //channel.sink.close();
 }

@@ -1,26 +1,25 @@
-import 'package:chat_sockets_api/chat/cubit/chat_cubit.dart';
+import 'package:chat_sockets_api/chat/provider.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
+import 'package:riverpod/riverpod.dart';
 
 Future<Response> onRequest(RequestContext context) async {
   final handler = webSocketHandler((channel, protocol) {
-    // A new client has connected to our server.
-    print(channel);
-    final cubit = context.read<ChatCubit>()..subscribe(channel);
-    // Send a message to the client.
-    //channel.sink.add(cubit.state);
-    // Listen for messages from the client.
+    final container = context.read<ProviderContainer>()
+      ..listen(
+        chatProvider,
+        (_, next) {
+          print('NEXT ${next}');
+          channel.sink.add(next.toString());
+        },
+      );
+    // Listen from client.
     channel.stream.listen(
       (event) {
-        switch (event) {
-          case '__addmessage__':
-            cubit.addMessage();
-            break;
-          default:
-            break;
-        }
+        print(event);
+        container.read(chatProvider.notifier).addChat();
       },
-      onDone: () => cubit.unsubscribe(channel),
+      onDone: () => channel.sink.done,
     );
   });
   return handler(context);
