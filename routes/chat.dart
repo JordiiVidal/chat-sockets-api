@@ -1,8 +1,8 @@
+import 'dart:convert';
 import 'package:chat_sockets_api/chat/provider.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
 import 'package:riverpod/riverpod.dart';
-import 'dart:convert';
 
 Future<Response> onRequest(RequestContext context) async {
   final handler = webSocketHandler((channel, protocol) {
@@ -10,14 +10,12 @@ Future<Response> onRequest(RequestContext context) async {
       ..listen(
         chatProvider,
         (_, next) {
-          print('to client');
           channel.sink.add(jsonEncode(next));
         },
       );
     // Listen from client.
     channel.stream.listen(
       (event) {
-        print('from client');
         switch (event) {
           case 'add_chat':
             container.read(chatProvider.notifier).addChat('test');
